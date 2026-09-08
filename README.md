@@ -1,24 +1,49 @@
-# pytorch-stable-diffusion
-PyTorch implementation of Stable Diffusion from scratch
+# Stable Diffusion Web Application
 
-## Download weights and tokenizer files:
+A custom Stable Diffusion web application built with FastAPI, PyTorch, and Docker.
 
-1. Download `vocab.json` and `merges.txt` from https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/tree/main/tokenizer and save them in the `data` folder
-2. Download `v1-5-pruned-emaonly.ckpt` from https://huggingface.co/stable-diffusion-v1-5/stable-diffusion-v1-5/tree/main and save it in the `data` folder
+The application provides a web interface for generating images using a custom Stable Diffusion model.
 
-## Tested fine-tuned models:
+## Features
 
-Just download the `ckpt` file from any fine-tuned SD (up to v1.5).
+- Text-to-image generation
+- Image-to-image generation
+- Negative prompts
+- Adjustable inference steps
+- CFG scale control
+- Seed control
+- Image strength control
+- Generated image download
+- Generation history/gallery
+- FastAPI backend
+- Docker support
 
-1. InkPunk Diffusion: https://huggingface.co/Envvi/Inkpunk-Diffusion/tree/main
-2. Illustration Diffusion (Hollie Mengert): https://huggingface.co/ogkalu/Illustration-Diffusion/tree/main
+---
 
-## Special thanks
+# Project Structure
 
-Special thanks to the following repositories:
-
-1. https://github.com/CompVis/stable-diffusion/
-1. https://github.com/divamgupta/stable-diffusion-tensorflow
-1. https://github.com/kjsman/stable-diffusion-pytorch
-1. https://github.com/huggingface/diffusers/
-
+```text
+pytorch-stable-diffusion/
+│
+├── app.py
+├── Dockerfile
+├── docker-compose.yml
+├── requirements.txt
+├── README.md
+│
+├── data/
+│   ├── vocab.json
+│   ├── merges.txt
+│   └── v1-5-pruned-emaonly.ckpt
+│
+├── templates/
+│   └── index.html
+│
+├── sd/
+│   ├── pipeline.py
+│   ├── model_loader.py
+│   ├── ddim.py
+│   └── ...
+│
+└── outputs/
+    └── Generated images
