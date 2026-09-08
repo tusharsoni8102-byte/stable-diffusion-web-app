@@ -1,0 +1,13 @@
+services:
+  stable-diffusion:
+    build: .
+    container_name: stable-diffusion-app
+
+    ports:
+      - "8000:8000"
+
+    volumes:
+      - ./outputs:/app/outputs
+      - ./data:/app/data:ro
+
+    restart: unless-stopped

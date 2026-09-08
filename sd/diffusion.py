@@ -338,12 +338,7 @@ class Diffusion(nn.Module):
 
         # (1, 320) -> (1, 1280)
         time = self.time_embedding(time)
-        
-        # (Batch, 4, Height / 8, Width / 8) -> (Batch, 320, Height / 8, Width / 8)
-        output = self.unet(latent, context, time)
-        
-        # (Batch, 320, Height / 8, Width / 8) -> (Batch, 4, Height / 8, Width / 8)
-        output = self.final(output)
-        
-        # (Batch, 4, Height / 8, Width / 8)
-        return output
+        x = self.unet(latent, context, time)
+        x = self.final(x)
+        return x
+       

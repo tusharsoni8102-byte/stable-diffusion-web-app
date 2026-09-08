@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Stable Diffusion Generator</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+
+            font-family: Arial, sans-serif;
+
+            background: #111827;
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: auto;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+        }
+
+        .card {
+            background: #1f2937;
+
+            padding: 25px;
+
+            border-radius: 15px;
+
+            margin-top: 25px;
+        }
+
+        label {
+            display: block;
+
+            margin-top: 15px;
+            margin-bottom: 8px;
+
+            font-weight: bold;
+        }
+
+        textarea,
+        input {
+
+            width: 100%;
+
+            padding: 12px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 16px;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .settings {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3, 1fr);
+
+            gap: 20px;
+        }
+
+        button {
+
+            width: 100%;
+
+            margin-top: 25px;
+
+            padding: 15px;
+
+            border: none;
+
+            border-radius: 8px;
+
+            font-size: 18px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #status {
+
+            text-align: center;
+
+            margin-top: 20px;
+
+            color: #d1d5db;
+        }
+
+        #result {
+
+            display: block;
+
+            max-width: 100%;
+
+            margin: 25px auto 0;
+
+            border-radius: 10px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* -----------------------------
+           GENERATION HISTORY
+        ----------------------------- */
+
+        .gallery {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fill, minmax(200px, 1fr));
+
+            gap: 15px;
+
+            margin-top: 20px;
+        }
+
+        .gallery img {
+
+            width: 100%;
+
+            border-radius: 10px;
+
+            cursor: pointer;
+
+            transition: transform 0.2s;
+        }
+
+        .gallery img:hover {
+
+            transform: scale(1.03);
+        }
+
+        @media (max-width: 700px) {
+
+            .settings {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="container">
+
+    <h1>🎨 Stable Diffusion Generator</h1>
+
+    <p class="subtitle">
+        Generate images using your custom Stable Diffusion model
+    </p>
+
+
+    <!-- =================================
+         GENERATION CONTROLS
+    ================================== -->
+
+    <div class="card">
+
+
+        <label for="prompt">
+            Prompt
+        </label>
+
+        <textarea
+            id="prompt"
+            placeholder="Describe the image you want to generate..."
+        ></textarea>
+
+
+        <label for="negative_prompt">
+            Negative Prompt
+        </label>
+
+        <textarea
+            id="negative_prompt"
+            placeholder="What should NOT appear in the image?"
+        ></textarea>
+
+
+        <!-- Steps / CFG / Seed -->
+
+        <div class="settings">
+
+
+            <div>
+
+                <label for="steps">
+                    Steps
+                </label>
+
+                <input
+                    id="steps"
+                    type="number"
+                    value="1"
+                    min="1"
+                    max="10"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="cfg">
+                    CFG Scale
+                </label>
+
+                <input
+                    id="cfg"
+                    type="number"
+                    value="8"
+                    min="1"
+                    max="14"
+                    step="0.5"
+                >
+
+            </div>
+
+
+            <div>
+
+                <label for="seed">
+                    Seed
+                </label>
+
+                <input
+                    id="seed"
+                    type="number"
+                    value="42"
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <!-- Image-to-Image -->
+
+        <label for="input_image">
+            Input Image (optional)
+        </label>
+
+        <input
+            id="input_image"
+            type="file"
+            accept="image/*"
+        >
+
+
+        <label for="strength">
+            Image Strength
+        </label>
+
+        <input
+            id="strength"
+            type="number"
+            value="0.9"
+            min="0.1"
+            max="1.0"
+            step="0.1"
+        >
+
+
+        <button
+            id="generateButton"
+            onclick="generateImage()"
+        >
+            Generate Image
+        </button>
+
+
+        <div id="status"></div>
+
+
+    </div>
+
+
+    <!-- =================================
+         GENERATED IMAGE
+    ================================== -->
+
+    <div class="card">
+
+        <h2>Generated Image</h2>
+
+        <img
+            id="result"
+            class="hidden"
+            alt="Generated image"
+        >
+
+
+        <a
+            id="downloadButton"
+            class="hidden"
+            download="stable_diffusion_generated.png"
+        >
+
+            <button type="button">
+                Download Image
+            </button>
+
+        </a>
+
+
+    </div>
+
+
+    <!-- =================================
+         GENERATION HISTORY
+    ================================== -->
+
+    <div class="card">
+
+        <h2>Generation History</h2>
+
+        <div
+            id="gallery"
+            class="gallery"
+        ></div>
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* =================================
+   LOAD GALLERY
+================================= */
+
+async function loadGallery() {
+
+    try {
+
+        const response =
+            await fetch("/gallery");
+
+
+        const data =
+            await response.json();
+
+
+        const gallery =
+            document.getElementById("gallery");
+
+
+        gallery.innerHTML = "";
+
+
+        data.images.forEach(
+            filename => {
+
+                const img =
+                    document.createElement("img");
+
+
+                img.src =
+                    `/outputs/${filename}`;
+
+
+                img.alt =
+                    filename;
+
+
+                img.onclick =
+                    () => {
+
+                        const result =
+                            document.getElementById("result");
+
+
+                        result.src =
+                            img.src;
+
+
+                        result.classList.remove(
+                            "hidden"
+                        );
+
+                    };
+
+
+                gallery.appendChild(
+                    img
+                );
+
+            }
+        );
+
+    }
+
+    catch (error) {
+
+        console.error(
+            "Failed to load gallery:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =================================
+   GENERATE IMAGE
+================================= */
+
+async function generateImage() {
+
+    const prompt =
+        document.getElementById("prompt").value;
+
+
+    const negativePrompt =
+        document.getElementById("negative_prompt").value;
+
+
+    const steps =
+        document.getElementById("steps").value;
+
+
+    const cfg =
+        document.getElementById("cfg").value;
+
+
+    const seed =
+        document.getElementById("seed").value;
+
+
+    const inputImage =
+        document.getElementById("input_image").files[0];
+
+
+    const strength =
+        document.getElementById("strength").value;
+
+
+    const status =
+        document.getElementById("status");
+
+
+    const image =
+        document.getElementById("result");
+
+
+    const button =
+        document.getElementById("generateButton");
+
+
+    const downloadButton =
+        document.getElementById("downloadButton");
+
+
+    if (!prompt.trim()) {
+
+        status.innerText =
+            "Please enter a prompt.";
+
+        return;
+    }
+
+
+    button.disabled = true;
+
+
+    button.innerText =
+        "Generating...";
+
+
+    status.innerText =
+        "Generating image... Please wait. CPU generation may take some time.";
+
+
+    image.classList.add(
+        "hidden"
+    );
+
+
+    downloadButton.classList.add(
+        "hidden"
+    );
+
+
+    /* Create multipart form */
+
+    const formData =
+        new FormData();
+
+
+    formData.append(
+        "prompt",
+        prompt
+    );
+
+
+    formData.append(
+        "negative_prompt",
+        negativePrompt
+    );
+
+
+    formData.append(
+        "steps",
+        steps
+    );
+
+
+    formData.append(
+        "cfg_scale",
+        cfg
+    );
+
+
+    formData.append(
+        "seed",
+        seed
+    );
+
+
+    formData.append(
+        "strength",
+        strength
+    );
+
+
+    /* Add image only if uploaded */
+
+    if (inputImage) {
+
+        formData.append(
+            "input_image",
+            inputImage
+        );
+
+    }
+
+
+    try {
+
+        const response =
+            await fetch(
+                "/generate",
+                {
+                    method: "POST",
+
+                    body: formData
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Generation failed"
+            );
+
+        }
+
+
+        const blob =
+            await response.blob();
+
+
+        const imageURL =
+            URL.createObjectURL(blob);
+
+
+        image.src =
+            imageURL;
+
+
+        image.classList.remove(
+            "hidden"
+        );
+
+
+        downloadButton.href =
+            imageURL;
+
+
+        downloadButton.classList.remove(
+            "hidden"
+        );
+
+
+        status.innerText =
+            "Image generated successfully!";
+
+
+        /* Refresh gallery */
+
+        loadGallery();
+
+
+    }
+
+    catch (error) {
+
+        console.error(error);
+
+
+        status.innerText =
+            "Error generating image.";
+
+    }
+
+    finally {
+
+        button.disabled = false;
+
+
+        button.innerText =
+            "Generate Image";
+
+    }
+
+}
+
+
+/* Load saved images when page opens */
+
+loadGallery();
+
+
+</script>
+
+
+</body>
+
+</html>

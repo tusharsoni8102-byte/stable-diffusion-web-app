@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from tqdm import tqdm
 from ddpm import DDPMSampler
+from ddim import DDIMSampler
 
 WIDTH = 512
 HEIGHT = 512
@@ -15,8 +16,8 @@ def generate(
     strength=0.8,
     do_cfg=True,
     cfg_scale=7.5,
-    sampler_name="ddpm",
-    n_inference_steps=50,
+    sampler_name="ddim",
+    n_inference_steps=5,
     models={},
     seed=None,
     device=None,
@@ -73,13 +74,16 @@ def generate(
         to_idle(clip)
 
         if sampler_name == "ddpm":
-            sampler = DDPMSampler(generator)
-            sampler.set_inference_timesteps(n_inference_steps)
+               sampler = DDPMSampler(generator)
+        elif sampler_name == "ddim":
+               sampler = DDIMSampler(generator)
         else:
-            raise ValueError("Unknown sampler value %s. ")
+               raise ValueError(f"Unknown sampler: {sampler_name}")
 
-        latents_shape = (1, 4, LATENTS_HEIGHT, LATENTS_WIDTH)
+        sampler.set_inference_timesteps(n_inference_steps)
 
+        latents_shape = (1, 4, LATENTS_HEIGHT, LATENTS_WIDTH)   
+        
         if input_image:
             encoder = models["encoder"]
             encoder.to(device)
