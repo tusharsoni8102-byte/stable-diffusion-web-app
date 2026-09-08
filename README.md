@@ -1,8 +1,24 @@
-# Stable Diffusion Web Application
+# 🎨 Stable Diffusion Web Application
 
-A custom Stable Diffusion web application built with **FastAPI, PyTorch, and Docker**.
+![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Web%20Framework-green)
+![PyTorch](https://img.shields.io/badge/PyTorch-2.0-red)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
+![Stable Diffusion](https://img.shields.io/badge/AI-Stable%20Diffusion-purple)
 
-The application provides a web interface for generating images using a custom Stable Diffusion model.
+A custom **Stable Diffusion web application** built with **FastAPI, PyTorch, and Docker**.
+
+The application provides an interactive web interface for generating AI images using a custom Stable Diffusion model.
+
+## ✨ Highlights
+
+- 🖼️ Text-to-image generation
+- 🎨 Image-to-image generation
+- ⚙️ Adjustable inference settings
+- 🎲 Reproducible generation using seeds
+- 📚 Generation history and gallery
+- 🐳 Fully Dockerized application
+- 🚀 REST API powered by FastAPI
 
 ---
 
