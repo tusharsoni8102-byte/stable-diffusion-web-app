@@ -81,6 +81,17 @@ pytorch-stable-diffusion/
 
 ---
 
+## Environment Configuration
+
+The project includes a `.env.example` file containing example configuration values.
+
+Create your own `.env` file:
+
+```bash
+copy .env.example .env
+
+---
+
 # Model Files
 
 The Stable Diffusion checkpoint is not included in this repository because the model file is several GB in size.
