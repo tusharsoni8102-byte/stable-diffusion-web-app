@@ -1,10 +1,12 @@
 # Stable Diffusion Web Application
 
-A custom Stable Diffusion web application built with FastAPI, PyTorch, and Docker.
+A custom Stable Diffusion web application built with **FastAPI, PyTorch, and Docker**.
 
 The application provides a web interface for generating images using a custom Stable Diffusion model.
 
-## Features
+---
+
+# Features
 
 - Text-to-image generation
 - Image-to-image generation
@@ -45,5 +47,253 @@ pytorch-stable-diffusion/
 │   ├── ddim.py
 │   └── ...
 │
-└── outputs/
-    └── Generated images
+├── outputs/
+│   └── Generated images
+│
+└── screenshots/
+    ├── generation-history.png
+    └── generated-image.png
+```
+
+---
+
+# Requirements
+
+- Docker Desktop
+- Docker Compose
+- Stable Diffusion model checkpoint
+
+---
+
+# Model Files
+
+The Stable Diffusion checkpoint is not included in this repository because the model file is several GB in size.
+
+Place the model checkpoint inside:
+
+```text
+data/
+```
+
+The expected model filename is:
+
+```text
+v1-5-pruned-emaonly.ckpt
+```
+
+The directory should look like:
+
+```text
+data/
+├── vocab.json
+├── merges.txt
+└── v1-5-pruned-emaonly.ckpt
+```
+
+---
+
+# Installation
+
+## Clone the Repository
+
+```bash
+git clone https://github.com/tusharsoni8102-byte/stable-diffusion-web-app.git
+```
+
+Move into the project directory:
+
+```bash
+cd stable-diffusion-web-app
+```
+
+---
+
+# Run with Docker
+
+Make sure Docker Desktop is running.
+
+Build and start the application:
+
+```bash
+docker compose up --build
+```
+
+The first build may take several minutes because Docker installs PyTorch and the required dependencies.
+
+Once the application starts successfully, you should see something similar to:
+
+```text
+Uvicorn running on http://0.0.0.0:8000
+```
+
+---
+
+# Access the Web Application
+
+Open your browser and visit:
+
+```text
+http://localhost:8000/app
+```
+
+The application allows you to:
+
+1. Enter a text prompt
+2. Add a negative prompt
+3. Adjust generation steps
+4. Adjust CFG scale
+5. Set a seed
+6. Optionally upload an input image
+7. Adjust image strength
+8. Generate images
+9. Download generated images
+10. View generation history
+
+---
+
+# API Endpoints
+
+## Application
+
+```text
+GET /app
+```
+
+Opens the Stable Diffusion web interface.
+
+## Generate Image
+
+```text
+POST /generate
+```
+
+Generates an image using the Stable Diffusion model.
+
+Parameters include:
+
+- `prompt`
+- `negative_prompt`
+- `steps`
+- `cfg_scale`
+- `seed`
+- `input_image`
+- `strength`
+
+## Gallery
+
+```text
+GET /gallery
+```
+
+Returns previously generated images.
+
+## Outputs
+
+Generated images are available through:
+
+```text
+/outputs/<filename>
+```
+
+---
+
+# Generated Images
+
+Generated images are automatically saved in:
+
+```text
+outputs/
+```
+
+Example filename:
+
+```text
+generated_20260908_064019_42.png
+```
+
+---
+
+# Example Workflow
+
+1. Start Docker Desktop.
+2. Run:
+
+```bash
+docker compose up --build
+```
+
+3. Open:
+
+```text
+http://localhost:8000/app
+```
+
+4. Enter a prompt such as:
+
+```text
+A futuristic city at sunset, cinematic lighting, highly detailed
+```
+
+5. Add a negative prompt such as:
+
+```text
+blurry, low quality, distorted, deformed
+```
+
+6. Adjust the generation settings.
+
+7. Click **Generate Image**.
+
+8. The generated image will appear in the web interface and be saved in the `outputs/` directory.
+
+---
+
+# Screenshots
+
+## Stable Diffusion Web Interface and Generation History
+
+![Stable Diffusion Web Interface](screenshots/generation-history.png)
+
+## Generated Image Example
+
+![Generated Image Example](screenshots/generated-image.png)
+
+---
+
+# Technologies Used
+
+- Python
+- FastAPI
+- PyTorch
+- Stable Diffusion
+- Hugging Face Transformers
+- Pillow
+- Docker
+- Docker Compose
+- HTML
+- CSS
+- JavaScript
+
+---
+
+# Notes
+
+This project currently runs on CPU by default:
+
+```python
+DEVICE = "cpu"
+```
+
+Image generation may therefore take significantly longer than GPU-based inference.
+
+For better performance, GPU acceleration can be configured depending on the available hardware and PyTorch/CUDA environment.
+
+---
+
+# Author
+
+**Tushar Soni**
+
+GitHub:
+
+https://github.com/tusharsoni8102-byte
