@@ -1,6 +1,5 @@
-## Python version: 3.11.3
+# Python version used in Docker: 3.10
 
-torch==2.0.1
 numpy==1.25.0
 tqdm==4.65.0
 transformers==4.33.2

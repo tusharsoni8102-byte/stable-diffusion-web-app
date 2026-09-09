@@ -9,6 +9,12 @@ COPY requirements.txt .
 
 RUN pip install --no-cache-dir --upgrade pip
 
+# Install CUDA-enabled PyTorch
+RUN pip install --no-cache-dir \
+    torch==2.0.1 \
+    --index-url https://download.pytorch.org/whl/cu118
+
+# Install remaining Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
