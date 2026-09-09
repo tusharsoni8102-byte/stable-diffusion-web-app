@@ -1,8 +1,8 @@
 # 🎨 Stable Diffusion Web Application
 
 ![Python](https://img.shields.io/badge/Python-3.10+-blue)
+![PyTorch](https://img.shields.io/badge/PyTorch-AI%20Framework-red)
 ![FastAPI](https://img.shields.io/badge/FastAPI-Web%20Framework-green)
-![PyTorch](https://img.shields.io/badge/PyTorch-2.0-red)
 ![Docker](https://img.shields.io/badge/Docker-Containerized-blue)
 ![Stable Diffusion](https://img.shields.io/badge/AI-Stable%20Diffusion-purple)
 
@@ -87,10 +87,12 @@ The project includes a `.env.example` file containing example configuration valu
 
 Create your own `.env` file:
 
-```bash
-copy .env.example .env
+```powershell
+Copy-Item .env.example .env
+```
 
 ---
+
 
 # Model Files
 
@@ -305,26 +307,64 @@ blurry, low quality, distorted, deformed
 
 # Notes
 
-This project currently runs on CPU by default:
+The application automatically selects CUDA when a compatible GPU is available:
 
 ```python
-DEVICE = "cpu"
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 ```
 
-Image generation may therefore take significantly longer than GPU-based inference.
+When GPU acceleration is unavailable, the application automatically falls back to CPU inference.
 
-For better performance, GPU acceleration can be configured depending on the available hardware and PyTorch/CUDA environment.
+Image generation on CPU may take significantly longer than GPU-based inference.
 
+GPU acceleration requires compatible NVIDIA hardware, drivers, and a Docker/PyTorch environment with GPU access.
 ---
+
 # 🚀 Deployment
 
-## Local Deployment with Docker
+## Local Deployment
+
+This project is currently configured for local deployment using Docker.
 
 ### 1. Clone the repository
 
 ```bash
 git clone https://github.com/tusharsoni8102-byte/stable-diffusion-web-app.git
 cd stable-diffusion-web-app
+```
+
+### 2. Add the Stable Diffusion model
+
+Place the model checkpoint inside:
+
+```text
+data/
+```
+
+The expected filename is:
+
+```text
+v1-5-pruned-emaonly.ckpt
+```
+
+### 3. Start the application
+
+```bash
+docker compose up --build
+```
+
+### 4. Open the application
+
+```text
+http://localhost:8000/app
+```
+
+## Global Deployment
+
+The application can be deployed to a GPU-enabled cloud environment.
+
+Stable Diffusion inference requires significant computational resources, and cloud GPU services may incur usage costs. For this reason, the project is currently documented and tested primarily for local Docker-based execution.
+
 ---
 
 # Author
