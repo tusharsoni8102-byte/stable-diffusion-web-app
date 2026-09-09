@@ -316,6 +316,16 @@ Image generation may therefore take significantly longer than GPU-based inferenc
 For better performance, GPU acceleration can be configured depending on the available hardware and PyTorch/CUDA environment.
 
 ---
+# 🚀 Deployment
+
+## Local Deployment with Docker
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/tusharsoni8102-byte/stable-diffusion-web-app.git
+cd stable-diffusion-web-app
+---
 
 # Author
 
